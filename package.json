@@ -1,0 +1,19 @@
+{
+  "name": "sahayak",
+  "version": "1.0.0",
+  "description": "AI-assisted emergency decision and resource allocation platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
