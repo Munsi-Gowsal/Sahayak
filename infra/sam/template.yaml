@@ -4,7 +4,7 @@ Description: Sahayak Emergency Response Platform Infrastructure
 
 Globals:
   Function:
-    Runtime: nodejs20.x
+    Runtime: nodejs24.x
     Architectures:
       - x86_64
     Timeout: 15
@@ -87,6 +87,11 @@ Resources:
         AllowMethods: "'*'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt SahayakUserPool.Arn
 
   # 4. Lambda Functions
   CreateEmergencyFunction:
@@ -110,6 +115,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency
             Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -133,6 +140,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -156,6 +165,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency/{id}
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -181,6 +192,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency/{id}/assign
             Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -206,6 +219,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency/{id}/status
             Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -229,6 +244,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /resources
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -252,6 +269,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /resources
             Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -275,6 +294,8 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /resources/{id}
             Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
