@@ -2,6 +2,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Sahayak Emergency Response Platform Infrastructure
 
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    Timeout: 15
+    Environment:
+      Variables:
+        INCIDENTS_TABLE: !Ref IncidentsTable
+        RESOURCES_TABLE: !Ref ResourcesTable
+
 Resources:
   # 1. DynamoDB Tables
   IncidentsTable:
@@ -67,7 +78,214 @@ Resources:
       GroupName: RESPONDER
       UserPoolId: !Ref SahayakUserPool
 
+  # 3. API Gateway
+  SahayakApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: api
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+
+  # 4. Lambda Functions
+  CreateEmergencyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/createEmergency.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref IncidentsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref ResourcesTable
+        - Statement:
+            - Effect: Allow
+              Action: 'bedrock:InvokeModel'
+              Resource: 'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0'
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /emergency
+            Method: POST
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/createEmergency.ts
+
+  GetEmergenciesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/getEmergencies.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref IncidentsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /emergency
+            Method: GET
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/getEmergencies.ts
+
+  GetEmergencyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/getEmergency.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref IncidentsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /emergency/{id}
+            Method: GET
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/getEmergency.ts
+
+  AssignEmergencyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/assignEmergency.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref IncidentsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ResourcesTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /emergency/{id}/assign
+            Method: POST
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/assignEmergency.ts
+
+  UpdateEmergencyStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/updateEmergencyStatus.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref IncidentsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ResourcesTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /emergency/{id}/status
+            Method: PUT
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/updateEmergencyStatus.ts
+
+  GetResourcesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/getResources.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ResourcesTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /resources
+            Method: GET
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/getResources.ts
+
+  CreateResourceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/createResource.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ResourcesTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /resources
+            Method: POST
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/createResource.ts
+
+  UpdateResourceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: services/api/src/handlers/updateResource.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ResourcesTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SahayakApi
+            Path: /resources/{id}
+            Method: PUT
+      Metadata:
+        BuildMethod: esbuild
+        BuildProperties:
+          Minify: true
+          Target: "es2020"
+          EntryPoints: 
+            - services/api/src/handlers/updateResource.ts
+
 Outputs:
+  ApiUrl:
+    Value: !Sub "https://${SahayakApi}.execute-api.${AWS::Region}.amazonaws.com/api/"
   IncidentsTableName:
     Value: !Ref IncidentsTable
   ResourcesTableName:
