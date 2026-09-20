@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sahayak Emergency Response Platform Infrastructure
+
+Resources:
+  # 1. DynamoDB Tables
+  IncidentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: sahayak-incidents
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: StatusIndex
+          KeySchema:
+            - AttributeName: status
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  ResourcesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: sahayak-resources
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  # 2. Cognito User Pool
+  SahayakUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: SahayakUsers
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+
+  # Cognito Groups for RBAC
+  CitizenGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: CITIZEN
+      UserPoolId: !Ref SahayakUserPool
+
+  OperatorGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: OPERATOR
+      UserPoolId: !Ref SahayakUserPool
+
+  ResponderGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: RESPONDER
+      UserPoolId: !Ref SahayakUserPool
+
+Outputs:
+  IncidentsTableName:
+    Value: !Ref IncidentsTable
+  ResourcesTableName:
+    Value: !Ref ResourcesTable
+  UserPoolId:
+    Value: !Ref SahayakUserPool
