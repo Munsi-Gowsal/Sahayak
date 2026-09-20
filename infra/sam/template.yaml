@@ -110,13 +110,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency
             Method: POST
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/createEmergency.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/createEmergency.ts
 
   GetEmergenciesFunction:
     Type: AWS::Serverless::Function
@@ -133,13 +133,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency
             Method: GET
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/getEmergencies.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/getEmergencies.ts
 
   GetEmergencyFunction:
     Type: AWS::Serverless::Function
@@ -156,13 +156,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency/{id}
             Method: GET
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/getEmergency.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/getEmergency.ts
 
   AssignEmergencyFunction:
     Type: AWS::Serverless::Function
@@ -181,13 +181,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency/{id}/assign
             Method: POST
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/assignEmergency.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/assignEmergency.ts
 
   UpdateEmergencyStatusFunction:
     Type: AWS::Serverless::Function
@@ -206,13 +206,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /emergency/{id}/status
             Method: PUT
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/updateEmergencyStatus.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/updateEmergencyStatus.ts
 
   GetResourcesFunction:
     Type: AWS::Serverless::Function
@@ -229,13 +229,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /resources
             Method: GET
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/getResources.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/getResources.ts
 
   CreateResourceFunction:
     Type: AWS::Serverless::Function
@@ -252,13 +252,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /resources
             Method: POST
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/createResource.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/createResource.ts
 
   UpdateResourceFunction:
     Type: AWS::Serverless::Function
@@ -275,13 +275,13 @@ Resources:
             RestApiId: !Ref SahayakApi
             Path: /resources/{id}
             Method: PUT
-      Metadata:
-        BuildMethod: esbuild
-        BuildProperties:
-          Minify: true
-          Target: "es2020"
-          EntryPoints: 
-            - services/api/src/handlers/updateResource.ts
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints: 
+          - services/api/src/handlers/updateResource.ts
 
 Outputs:
   ApiUrl:
